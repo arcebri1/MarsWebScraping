@@ -5,6 +5,7 @@
 
 
 # Dependencies
+import pandas as pd
 from bs4 import BeautifulSoup
 import requests
 import pymongo
@@ -14,29 +15,32 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 # In[2]:
 
-
-executable_path = {'executable_path': ChromeDriverManager().install()}
-browser = Browser('chrome', **executable_path, headless=False)
+def init_browser():
+    executable_path = {'executable_path': ChromeDriverManager().install()}
+    return Browser('chrome', **executable_path, headless=False)
 
 
 # In[ ]:
 
 
-### NASA Mars News
+# NASA Mars News
 
 
 # In[3]:
 
+def scrape_info():
+    browser = init_browser
 
-url = 'https://mars.nasa.gov/news/'
-browser.visit(url)
+
+    url = 'https://mars.nasa.gov/news/'
+    browser.visit(url)
 
 
 # In[4]:
 
 
-html = browser.html
-soup = BeautifulSoup(html, 'html.parser')
+    html = browser.html
+    soup = BeautifulSoup(html, 'html.parser')
 
 
 # In[25]:
@@ -48,7 +52,7 @@ soup = BeautifulSoup(html, 'html.parser')
 # In[19]:
 
 
-news_title=soup.find_all('div', class_='content_title')[1].text
+    news_title = soup.find_all('div', class_='content_title')[1].text
 
 
 # In[26]:
@@ -60,14 +64,14 @@ news_title=soup.find_all('div', class_='content_title')[1].text
 # In[27]:
 
 
-news_p=soup.find_all('div', class_='article_teaser_body')[0].text
+    news_p = soup.find_all('div', class_='article_teaser_body')[0].text
 
 
 # In[33]:
 
 
-print(f'Title: {news_title}')
-print(f'Summary: {news_p}')
+    print(f'Title: {news_title}')
+    print(f'Summary: {news_p}')
 
 
 # In[34]:
@@ -79,7 +83,7 @@ print(f'Summary: {news_p}')
 # In[ ]:
 
 
-### JPL Mars Space Images - Featured Image
+# JPL Mars Space Images - Featured Image
 
 
 # In[35]:
@@ -149,12 +153,13 @@ soup = BeautifulSoup(html, 'html.parser')
 # In[140]:
 
 
-main=soup.find('figure', class_='lede')
-img=main.find('a')
-href=img['href']
-nasa_url='https://www.jpl.nasa.gov'
-featured_image_url=nasa_url+href
-print(f'The url for NASA featured image of the day is:      {featured_image_url}')
+main = soup.find('figure', class_='lede')
+img = main.find('a')
+href = img['href']
+nasa_url = 'https://www.jpl.nasa.gov'
+featured_image_url = nasa_url+href
+print(
+    f'The url for NASA featured image of the day is:      {featured_image_url}')
 
 
 # In[143]:
@@ -178,7 +183,7 @@ print(f'The url for NASA featured image of the day is:      {featured_image_url}
 # In[ ]:
 
 
-### Mars Facts
+# Mars Facts
 
 
 # In[144]:
@@ -191,9 +196,6 @@ browser.visit(url)
 # In[146]:
 
 
-import pandas as pd
-
-
 # In[147]:
 
 
@@ -204,14 +206,14 @@ tables
 # In[150]:
 
 
-df=tables[0]
+df = tables[0]
 df
 
 
 # In[152]:
 
 
-df.columns=["Description", "Mars Values"]
+df.columns = ["Description", "Mars Values"]
 df
 
 
@@ -225,7 +227,7 @@ html_table
 # In[156]:
 
 
-html_tb=html_table.replace('\n', '')
+html_tb = html_table.replace('\n', '')
 
 
 # In[162]:
@@ -237,13 +239,13 @@ html_tb
 # In[ ]:
 
 
-### Mars Hemispheres
+# Mars Hemispheres
 
 
 # In[197]:
 
 
-url='https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
 browser.visit(url)
 
 
@@ -270,9 +272,9 @@ soup = BeautifulSoup(html, 'html.parser')
 
 
 articles = soup.find_all('div', class_='description')
-nasa_url='https://astrogeology.usgs.gov/'
+nasa_url = 'https://astrogeology.usgs.gov/'
 
-title_and_url=[]
+title_and_url = []
 
 # Iterate through each product
 for article in articles:
@@ -281,20 +283,18 @@ for article in articles:
     href = link['href']
     title = link.find('h3').text
     browser.visit(nasa_url+href)
-    
+
     html = browser.html
     soup = BeautifulSoup(html, 'html.parser')
-    
-    
-    down=soup.find('div', class_='downloads')
-    image_url=down.find('a')['href']
-    
-    title_and_url.append({"title":title, "img_url":image_url})
-    
+
+    down = soup.find('div', class_='downloads')
+    image_url = down.find('a')['href']
+
+    title_and_url.append({"title": title, "img_url": image_url})
+
     print('-----------')
     print(title)
     print(image_url)
-
 
 
 # In[195]:
@@ -324,7 +324,3 @@ browser.quit()
 
 
 # In[ ]:
-
-
-
-
