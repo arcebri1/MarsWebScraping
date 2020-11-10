@@ -5,276 +5,167 @@
 
 
 # Dependencies
-import pandas as pd
 from bs4 import BeautifulSoup
 import requests
 import pymongo
 from splinter import Browser
 from webdriver_manager.chrome import ChromeDriverManager
+import pandas as pd
 
 
 # In[2]:
 
-def init_browser():
-    executable_path = {'executable_path': ChromeDriverManager().install()}
-    return Browser('chrome', **executable_path, headless=False)
 
-
-# In[ ]:
-
-
-# NASA Mars News
+#Open web browser/Setup splinter
+executable_path = {'executable_path': ChromeDriverManager().install()}
+browser = Browser('chrome', **executable_path, headless=False)
 
 
 # In[3]:
 
-def scrape_info():
-    browser = init_browser
 
-
-    url = 'https://mars.nasa.gov/news/'
-    browser.visit(url)
+### NASA Mars News##
 
 
 # In[4]:
 
 
-    html = browser.html
-    soup = BeautifulSoup(html, 'html.parser')
-
-
-# In[25]:
-
-
-# soup.find_all('div', class_='content_title')[1].text
-
-
-# In[19]:
-
-
-    news_title = soup.find_all('div', class_='content_title')[1].text
-
-
-# In[26]:
-
-
-# soup.find_all('div', class_='article_teaser_body')[0].text
-
-
-# In[27]:
-
-
-    news_p = soup.find_all('div', class_='article_teaser_body')[0].text
-
-
-# In[33]:
-
-
-    print(f'Title: {news_title}')
-    print(f'Summary: {news_p}')
-
-
-# In[34]:
-
-
-# browser.quit()
-
-
-# In[ ]:
-
-
-# JPL Mars Space Images - Featured Image
-
-
-# In[35]:
-
-
-# executable_path = {'executable_path': ChromeDriverManager().install()}
-# browser = Browser('chrome', **executable_path, headless=False)
-
-
-# In[113]:
-
-
-url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
+# Open URL of page to be scraped
+url = 'https://mars.nasa.gov/news/'
 browser.visit(url)
 
-
-# In[114]:
-
-
-# html = browser.html
-# soup = BeautifulSoup(html, 'html.parser')
-
-
-# In[115]:
-
-
-# soup.find('figure', class_='lede')
-
-
-# In[116]:
-
-
-browser.click_link_by_id('full_image')
-
-
-# In[117]:
-
-
-# browser.links.find_by_partial_text('full_image').click()
-
-
-# In[118]:
-
-
-# browser.links.find_by_partial_text('more info').click()
-
-
-# In[119]:
-
-
-browser.click_link_by_partial_text('more info')
-
-
-# In[63]:
-
-
-# soup.find('a', class_='src')
-
-
-# In[127]:
-
-
+# Create BeautifulSoup object; parse with 'html.parser'
 html = browser.html
 soup = BeautifulSoup(html, 'html.parser')
 
+# Retrieve the title
+news_title=soup.find_all('div', class_='content_title')[1].text
 
-# In[140]:
+# Retrieve the title paragraph
+news_p=soup.find_all('div', class_='article_teaser_body')[0].text
 
-
-main = soup.find('figure', class_='lede')
-img = main.find('a')
-href = img['href']
-nasa_url = 'https://www.jpl.nasa.gov'
-featured_image_url = nasa_url+href
-print(
-    f'The url for NASA featured image of the day is:      {featured_image_url}')
+print(f'Title: {news_title}')
+print(f'Summary: {news_p}')
 
 
-# In[143]:
+# In[5]:
 
 
-# href
+### JPL Mars Space Images - Featured Image
 
 
-# In[142]:
+# In[6]:
 
 
-# img
+# Open URL of page to be scraped
+url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
+browser.visit(url)
+
+#Press on the button Full Image
+browser.click_link_by_id('full_image')
+
+#Press on the button More Info
+browser.click_link_by_partial_text('more info')
+
+# Create BeautifulSoup object; parse with 'html.parser'
+html = browser.html
+soup = BeautifulSoup(html, 'html.parser') 
+
+#Scrape the page to get the image url
+main=soup.find('figure', class_='lede')
+img=main.find('a')
+href=img['href']
+nasa_url='https://www.jpl.nasa.gov'
+featured_image_url=nasa_url+href
+print(f'The url for NASA featured image of the day is:      {featured_image_url}')
 
 
-# In[141]:
+# In[7]:
 
 
-# main
+### Mars Facts
 
 
-# In[ ]:
+# In[8]:
 
 
-# Mars Facts
-
-
-# In[144]:
-
-
+# Open URL of page to be scraped
 url = 'https://space-facts.com/mars/'
 browser.visit(url)
 
-
-# In[146]:
-
-
-# In[147]:
-
-
+#Read the url in html
 tables = pd.read_html(url)
 tables
 
 
-# In[150]:
+# In[9]:
 
 
-df = tables[0]
+#Create a Dataframe
+df=tables[0]
 df
 
 
-# In[152]:
+# In[10]:
 
 
-df.columns = ["Description", "Mars Values"]
+#Rename the key values
+df.columns=["Description", "Mars Values"]
 df
 
 
-# In[153]:
+# In[11]:
 
 
-html_table = df.to_html()
+index_df=df.set_index('Description')
+index_df
+
+
+# In[12]:
+
+
+#Create dataframe to html table
+html_table = index_df.to_html()
 html_table
 
 
-# In[156]:
+# In[13]:
 
 
-html_tb = html_table.replace('\n', '')
-
-
-# In[162]:
-
-
+#Clean up the html table
+html_tb=html_table.replace('\n', '')
 html_tb
 
 
-# In[ ]:
+# In[14]:
 
 
-# Mars Hemispheres
+### Mars Hemispheres
 
 
-# In[197]:
+# In[15]:
 
 
-url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+# Open URL of page to be scraped
+url='https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
 browser.visit(url)
 
-
-# In[198]:
-
-
+# Create BeautifulSoup object; parse with 'html.parser'
 html = browser.html
 soup = BeautifulSoup(html, 'html.parser')
 
 
-# In[199]:
+# In[16]:
 
 
-# soup.find_all('div', class_='item')
-
-
-# In[169]:
-
-
-# soup.find_all('div', class_='description')
-
-
-# In[200]:
-
-
+# Retrieve the parent div for all components
 articles = soup.find_all('div', class_='description')
-nasa_url = 'https://astrogeology.usgs.gov/'
 
-title_and_url = []
+#Main url
+nasa_url='https://astrogeology.usgs.gov/'
+
+#Create a list to append the title and image
+title_and_url=[]
 
 # Iterate through each product
 for article in articles:
@@ -283,44 +174,40 @@ for article in articles:
     href = link['href']
     title = link.find('h3').text
     browser.visit(nasa_url+href)
-
+    
+    # Create BeautifulSoup object; parse with 'html.parser'
     html = browser.html
     soup = BeautifulSoup(html, 'html.parser')
-
-    down = soup.find('div', class_='downloads')
-    image_url = down.find('a')['href']
-
-    title_and_url.append({"title": title, "img_url": image_url})
-
+    
+    #Scrape to find the image url
+    down=soup.find('div', class_='downloads')
+    image_url=down.find('a')['href']
+    
+    #Append the results to the list
+    title_and_url.append({"title":title, "img_url":image_url})
+    
+    #Print the results
     print('-----------')
     print(title)
     print(image_url)
 
 
-# In[195]:
+
+# In[17]:
 
 
-# html = browser.html
-# soup = BeautifulSoup(html, 'html.parser')
-
-
-# In[194]:
-
-
-# down=soup.find('div', class_='downloads')
-# image_url=down.find('a')['href']
-
-
-# In[201]:
-
-
+#Show dictionary
 title_and_url
 
 
-# In[202]:
+# In[18]:
 
 
 browser.quit()
 
 
 # In[ ]:
+
+
+
+
