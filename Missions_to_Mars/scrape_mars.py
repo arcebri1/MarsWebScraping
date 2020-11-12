@@ -8,7 +8,7 @@ import pandas as pd
 def init_browser():
     executable_path = {'executable_path': ChromeDriverManager().install()}
     return Browser('chrome', **executable_path, headless=False)
-
+    
 
 def scrape():
     browser = init_browser()
@@ -25,6 +25,7 @@ def scrape():
     news_title=soup.find_all('div', class_='content_title')[1].text
 
     news_p=soup.find_all('div', class_='article_teaser_body')[0].text
+    # news_p=soup.find_all('div', class_='article_teaser_body')[1].text
 
 ### JPL Mars Space Images - Featured Image
 
@@ -38,9 +39,9 @@ def scrape():
     html = browser.html
     soup = BeautifulSoup(html, 'html.parser') 
 
-    main=soup.find('figure', class_='lede')
-    img=main.find('a')
-    href=img['href']
+    # main=soup.find('figure', class_='lede')
+    # img=main.find('a')
+    href=soup.find_all('img')[3]['src']
     nasa_url='https://www.jpl.nasa.gov'
     featured_image_url=nasa_url+href
 
@@ -100,7 +101,7 @@ def scrape():
         "hemisphere_images":title_and_url
     }
 
-    # browser.quit()
+    browser.quit()
 
     return mars_data
 
