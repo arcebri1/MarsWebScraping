@@ -42,7 +42,6 @@ def scrape():
     main=soup.find('figure', class_='lede')
     img=main.find('a')
     href=img['href']
-    # href=soup.find_all('img')[3]['src']
     nasa_url='https://www.jpl.nasa.gov'
     featured_image_url=nasa_url+href
 
