@@ -14,6 +14,8 @@ Did the initial scraping using Jupyter Notebook, BeautifulSoup, Pandas, and Requ
 
 * Scraped the [NASA Mars News Site](https://mars.nasa.gov/news/) and collected the latest News Title and Paragraph Text. 
 
+![](Missions_to_Mars/appics/latestnews.png)
+
 ### JPL Mars Space Images - Featured Image
 
 * Visited the url for JPL Featured Space Image [here](https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars).
@@ -23,6 +25,8 @@ Did the initial scraping using Jupyter Notebook, BeautifulSoup, Pandas, and Requ
 * Made sure to find the image url to the full size `.jpg` image.
 
 * Made sure to save a complete url string for this image.
+
+![](Missions_to_Mars/appics/marsimage.png)
 
 ### Mars Facts
 
