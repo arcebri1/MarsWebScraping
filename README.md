@@ -34,6 +34,8 @@ Did the initial scraping using Jupyter Notebook, BeautifulSoup, Pandas, and Requ
 
 * Used Pandas to convert the data to a HTML table string.
 
+![](Missions_to_Mars/appics/marsfacts.png)
+
 ### Mars Hemispheres
 
 * Visited the USGS Astrogeology site [here](https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars) to obtain high resolution images for each of Mar's hemispheres.
@@ -41,6 +43,8 @@ Did the initial scraping using Jupyter Notebook, BeautifulSoup, Pandas, and Requ
 * Saved both the image url string for the full resolution hemisphere image, and the Hemisphere title containing the hemisphere name. Used a Python dictionary to store the data.
 
 * Appended the dictionary with the image url string and the hemisphere title to a list. This list will contain one dictionary for each hemisphere.
+
+![](Missions_to_Mars/appics/marshemi.gif)
 
 
 ## MongoDB and Flask Application
